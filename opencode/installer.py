@@ -203,6 +203,74 @@ def install_opencode() -> bool:
         return False
 
 
+def install_antigravity_plugin() -> bool:
+    """
+    Instala o plugin antigravity para o OpenCode CLI.
+    O plugin adiciona funcionalidades avançadas de IA ao OpenCode.
+    
+    Returns:
+        bool: True se instalação bem-sucedida
+    """
+    print("\n📦 Instalando plugin antigravity para OpenCode...")
+    print("   Comando: bun add -g @antigravity/opencode-plugin")
+    print()
+
+    try:
+        # Atualizar PATH para encontrar o Bun
+        refresh_path()
+        
+        # Encontrar o executável do Bun
+        user_home = Path.home()
+        bun_exe = user_home / ".bun" / "bin" / "bun.exe"
+        
+        if not bun_exe.exists():
+            # Tentar usar o bun do PATH
+            bun_cmd = "bun"
+        else:
+            bun_cmd = str(bun_exe)
+
+        # Tentar instalar o plugin antigravity
+        cmd = [bun_cmd, "add", "-g", "@antigravity/opencode-plugin"]
+
+        result = subprocess.run(
+            cmd,
+            capture_output=True,
+            text=True,
+            encoding='utf-8',
+            errors='replace',
+            timeout=120  # 2 minutos
+        )
+
+        if result.returncode == 0:
+            print("✅ Plugin antigravity instalado com sucesso!")
+            if result.stdout:
+                lines = result.stdout.strip().split('\n')
+                for line in lines[-3:]:
+                    if line.strip():
+                        print(f"   {line.strip()}")
+            return True
+        else:
+            # Se falhar, pode ser que o pacote não exista ainda
+            print(f"⚠️  Plugin antigravity não disponível no registro npm")
+            print(f"   O OpenCode funcionará sem o plugin antigravity")
+            print(f"   Código de retorno: {result.returncode}")
+            if result.stderr:
+                stderr_preview = result.stderr[:200]
+                print(f"   Detalhes: {stderr_preview}")
+            return False  # Retorna False mas não impede o fluxo
+
+    except FileNotFoundError:
+        print("⚠️  Bun não encontrado. Plugin antigravity não será instalado.")
+        return False
+    except subprocess.TimeoutExpired:
+        print("⚠️  Timeout na instalação do plugin antigravity (2 minutos)")
+        return False
+    except Exception as e:
+        print(f"⚠️  Aviso ao instalar plugin antigravity: {e}")
+        return False
+
+
+
 def install() -> int:
     """
     Função principal de instalação - API pública do módulo.
@@ -263,6 +331,17 @@ def main() -> int:
             if not install_opencode():
                 print("\n❌ Falha na instalação do OpenCode CLI.")
                 success = False
+        
+        print()
+        
+        # Passo 3: Instalar plugin antigravity (opcional mas recomendado)
+        if success:
+            print("📌 Instalando integrações e plugins...")
+            plugin_success = install_antigravity_plugin()
+            # Não falhar a instalação se o plugin não estiver disponível
+            if not plugin_success:
+                print("   ℹ️  OpenCode instalado sem plugin antigravity")
+            print()
 
         if success:
             print("\n🎉 Instalação concluída com sucesso!")
@@ -270,6 +349,8 @@ def main() -> int:
             print("   1. Reinicie o terminal para atualizar o PATH")
             print("   2. Execute 'opencode' para iniciar o CLI")
             print("   3. Configure sua API key se necessário")
+            if plugin_success:
+                print("   4. Use 'opencode --help' para ver comandos do plugin antigravity")
             return 0
         else:
             print("\n⚠️  Instalação parcialmente concluída.")

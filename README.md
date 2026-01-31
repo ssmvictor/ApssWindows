@@ -44,7 +44,7 @@ python src\main.py
 | **Git** | Controle de versão |
 | **MCP Excel** | Server para Excel |
 | **Antigravity** | Gemini CLI *(em desenvolvimento)* |
-| **OpenCode** | OpenCode CLI *(em desenvolvimento)* |
+| **OpenCode** | OpenCode CLI + Plugin Antigravity *(em desenvolvimento)* |
 
 ## Documentação
 

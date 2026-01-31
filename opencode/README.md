@@ -17,6 +17,12 @@ Módulo de instalação automatizada do **Bun Runtime** e **OpenCode CLI**.
 - CLI de IA para desenvolvimento
 - Instalado via Bun: `bun add -g opencode-ai`
 
+### 3. Plugin Antigravity (Opcional)
+- Plugin de integração com Antigravity IDE
+- Adiciona funcionalidades avançadas de IA ao OpenCode
+- Instalado via Bun: `bun add -g @antigravity/opencode-plugin`
+- **Nota:** Se o pacote não estiver disponível no npm, a instalação continua sem o plugin
+
 ## Requisitos
 
 - **Windows 10 ou superior** (64-bit recomendado)
@@ -67,6 +73,7 @@ opencode
 2. Execute `bun --version` para verificar o Bun
 3. Execute `opencode` para iniciar o CLI
 4. Configure sua API key se necessário
+5. Se o plugin antigravity foi instalado, use `opencode --help` para ver comandos adicionais
 
 ## Links Úteis
 
